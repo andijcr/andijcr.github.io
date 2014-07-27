@@ -1,0 +1,11 @@
+# Site settings
+title: Andrea was here
+email: andij.cr@gmail.com
+description: "hic sunt leones. But mustly sketches and ideas"
+baseurl: ""
+url: "http://andijcr.github.io"
+github_username: andijcr
+
+# Build settings
+markdown: kramdown
+permalink: pretty
