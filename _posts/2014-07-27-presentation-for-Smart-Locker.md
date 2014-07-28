@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "First version of the graohic for the presentation of Smart Locker"
+title:  "First version of the graphic for the presentation of Smart Locker"
 date:   2014-07-27 18:41:59
 categories: blog
 tags: mug graphics
