@@ -86,5 +86,31 @@ if successful:
 
 ![yay]({{ site.url }}/assets/blink.gif)
 
-**TODO**
-* right now i cannot get avrdude to work outside root. Even by adding an udev rule 
+What remains to be done?
+
+working as root to upload a sketch is cumbersome. by adding the correct rules (following [this](http://mightyohm.com/blog/2010/03/run-avrdude-without-root-privs-in-ubuntu/) with some corrections from [this](http://forums.linuxmint.com/viewtopic.php?f=58&t=116115)) is it possible to use avrdude as user, and upload the sketch directly from the arduino ide.
+
+the first step is to add a new rule to /etc/udev/rules.d, and then reload the udev daemon.
+
+{% highlight bash %}
+#as root:
+
+$ echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1781", ATTR{idProduct}=="0c9f", MODE="0666", GROUP="plugdev"' > /etc/udev/rules.d/99-trinket.rules.d
+$ restart udev
+
+{% endhighlight %}
+
+note that the `GROUP` attribute is set to `plugdev`
+this value is the name of a group which my user is part of. to know which groups your user belongs, you can run the command
+
+	groups [your user]
+
+and choose an appropriate value.
+
+after doing this, running
+
+	$ avrdude -c usbtiny -p m8
+
+in bootloader mode should give the same result as the `sudo` version. 
+
+finally, we can use the arduino ide to upload the blink sketch.
