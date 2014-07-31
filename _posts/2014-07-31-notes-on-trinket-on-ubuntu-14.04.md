@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Personal Notes on get adafruit Trinket to work on Ubuntu 14.04"
-date:   2014-07-27 18:41:59
+date:   2014-07-31 17:38:00
 categories: blog
 tags: mug
 ---
