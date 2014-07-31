@@ -6,7 +6,9 @@ categories: blog
 tags: mug
 ---
 
-I bought a couple of adafruit Trinket some time ago, but i got the time to work on them only yesterday.
+I bought a couple of [adafruit Trinket](https://learn.adafruit.com/introducing-trinket/introduction) some time ago, but i got the time to work on them only yesterday.
+
+![trinket]({{ site.url }}/assets/trinket.jpg)
 
 As described in their [manual](https://learn.adafruit.com/introducing-trinket/introduction), Linux (and arduino 1.5) is not supported, because sometimes the kernel does not create the device node when trinket is inserted in the usbport.
 
@@ -76,7 +78,13 @@ void loop() {
 }
 {% endhighlight %}
 
-as avrdude still requires root to use the device, i use the arduino ide to verify the code. this action produces an uploadable hex in the temp build folder. grab the binary - named sketch_jul30a.cpp.hex in my case - and the command to write the program is this: 
+as avrdude still requires root to use the device, i use the arduino ide to verify the code. this action produces an uploadable hex in the temp build folder. grab the binary - named sketch_jul30a.cpp.hex in my case - and the command to write the program is this (remember to enter bootloader mode): 
 
 	$ sudo avrdude  -c usbtiny -p attiny85 -U flash:w:sketch_jul30a.cpp.hex
 
+if successful:
+
+![yay]({{ site.url }}/assets/blink.gif)
+
+**TODO**
+* right now i cannot get avrdude to work outside root. Even by adding an udev rule 
