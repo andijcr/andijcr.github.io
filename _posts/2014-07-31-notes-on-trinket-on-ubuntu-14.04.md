@@ -94,7 +94,7 @@ the first step is to add a new rule to /etc/udev/rules.d, and then reload the ud
 {% highlight bash %}
 #as root:
 
-$ echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1781", ATTR{idProduct}=="0c9f", MODE="0666", GROUP="plugdev"' > /etc/udev/rules.d/99-trinket.rules.d
+$ echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1781", ATTR{idProduct}=="0c9f", MODE="0666", GROUP="plugdev"' > /etc/udev/rules.d/99-trinket.rules
 $ restart udev
 
 {% endhighlight %}
