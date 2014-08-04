@@ -24,8 +24,30 @@ return also
 
 which is the right vendorId:productId identifier, and rightly indicates that the device is a USBtiny programmer. 
 
-After patching the avrdude conf, as described [here](https://learn.adafruit.com/introducing-trinket/setting-up-with-arduino-ide) (i used meld to merge the section about attiny85)
-the command 
+The guide [here](https://learn.adafruit.com/introducing-trinket/setting-up-with-arduino-ide) gives instruction to substitute the installed avrdude.conf with their avrdude.conf, but mine version seems more recent than theirs, so i opted to integrate the changes using [meld](http://meldmerge.org/), a visual merge tool. in the end, the important differences are some valors inside the ATtiny85 section, so it's easier to copy the adafruit's section inside the local version.
+
+first we have to find where avrdude.conf is installed.
+the command
+
+	$ find / -name "avrdude.conf" 2>/dev/null
+
+search for `avrdude.conf` from the root. `2>/dev/null` discard every error message about denied permission to read a subdirectory. 
+
+on my pc, avrdude.conf is installed in two places: `/etc/avrdude.conf` and `/usr/share/arduino/hardware/tools/avrdude.conf`. To be sure, i will patch them both.
+
+the adafruit's file contains a section, started by 
+
+	#------------------------------------------------------------
+	# ATtiny85
+	#------------------------------------------------------------
+
+that describes the parameters to work with the chip. I just copy the section from this header to the next and substitute it to the equivalent section inside the local copies. For simplicity, this is the part with the correct values to write inside the local copies:
+
+[https://gist.github.com/andijcr/f4a660fde4035fb0a3aa](https://gist.github.com/andijcr/f4a660fde4035fb0a3aa)
+
+remember that you have to be root to modify your local copies.
+
+After patching the avrdude conf the command 
 
 	$ sudo avrdude -c usbtiny -p m8
 
