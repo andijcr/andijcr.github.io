@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Personal Notes on get adafruit Trinket to work on Ubuntu 14.04"
+title:  "Personal Notes on getting adafruit Trinket to work on Ubuntu 14.04"
 categories: blog
 tags: mug
 ---
