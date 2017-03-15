@@ -6,6 +6,7 @@ description: "Hic sunt leones. But mustly sketches and ideas."
 baseurl: ""
 url: "http://andijcr.github.io"
 github_username: andijcr
+date_format: "%b %-d, %Y"
 
 # Build settings
 permalink: pretty
