@@ -7,10 +7,13 @@ tags: python
 
 # My Mixed Integer Programming approach for the first round of Google HashCode 2017
 ## Or: how Google has a nice library for optimization problems, but the documentation kinda sucks 
+### Resources
+
+The problem statement, the datasets, this jypyter notebook can be found [here](https://github.com/andijcr/andijcr.github.io/tree/master/assets/hashcode)
 
 ### The challenge
 
-Here is a summary of the challenge proposed for the first round of hashcode 2017, a more in depth explanation can be found in the [problem pdf](files/hashcode2017_streaming_videos.pdf)
+Here is a summary of the challenge proposed for the first round of hashcode 2017, a more in depth explanation can be found in the [problem pdf](https://github.com/andijcr/andijcr.github.io/blob/master/assets/hashcode/hashcode2017_streaming_videos.pdf)
 
 It is given a net, with a datacenter, a series of cache servers, and a series of clients (or endpoints) connected to the datacenter and to 0 or more cache servers. each connection between a client and a cache/datacenter has a constant latency, and one cache server can be connected to one or more clients.
 
@@ -250,7 +253,7 @@ def mpiSolver(videoList, cacheList, endpointList, requestList):
 
 ### A test dataset
 
-A small example to test the code I've written. This is taken from the [problem pdf](files/hashcode2017_streaming_videos.pdf)
+A small example to test the code I've written. This is taken from the [problem pdf](https://github.com/andijcr/andijcr.github.io/blob/master/assets/hashcode/hashcode2017_streaming_videos.pdf)
 
 In the datacenter there are 5 videos, there are 3 caches of 100 mb each, and 2 endpoints connect to the datacenter. Only the first endpoint is connected to all the caches.
 
