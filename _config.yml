@@ -1,4 +1,5 @@
 # Site settings
+theme: jekyll-theme-cayman
 title: Andrea was here
 email: andij.cr@gmail.com
 description: "Hic sunt leones. But mustly sketches and ideas."
@@ -7,5 +8,4 @@ url: "http://andijcr.github.io"
 github_username: andijcr
 
 # Build settings
-markdown: kramdown
 permalink: pretty
