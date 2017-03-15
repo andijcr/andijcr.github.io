@@ -5,7 +5,6 @@ categories: blog
 tags: python
 ---
 
-# My Mixed Integer Programming approach for the first round of Google HashCode 2017
 ## Or: how Google has a nice library for optimization problems, but the documentation kinda sucks 
 ### Resources
 
