@@ -9,7 +9,7 @@ tags: python
 ## Or: how Google has a nice library for optimization problems, but the documentation kinda sucks 
 ### Resources
 
-The problem statement, the datasets, this jypyter notebook can be found [here](https://github.com/andijcr/andijcr.github.io/tree/master/assets/hashcode)
+The problem statement, the datasets, this jupyter notebook can be found [here](https://github.com/andijcr/andijcr.github.io/tree/master/assets/hashcode)
 
 ### The challenge
 
