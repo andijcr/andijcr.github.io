@@ -15,11 +15,6 @@ sections:
   label: Data
   create: none
   match: "**/*.{json,yaml,yml}"
-- type: directory
-  path: _data
-  label: Data
-  create: none
-  match: "**/*.{json,yaml,yml}"
 upload_dir: ''
 public_path: ''
 front_matter_path: ''
