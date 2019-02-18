@@ -1,8 +1,11 @@
 ---
+title: Personal Notes on getting adafruit Trinket to work on Ubuntu 14.04
+date: 2014-07-31 00:00:00 Z
+categories:
+- blog
+tags:
+- mug
 layout: post
-title:  "Personal Notes on getting adafruit Trinket to work on Ubuntu 14.04"
-categories: blog
-tags: mug
 ---
 
 I bought a couple of [adafruit Trinket](https://learn.adafruit.com/introducing-trinket/introduction) some time ago, but i got the time to work on them only yesterday.

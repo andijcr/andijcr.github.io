@@ -1,15 +1,17 @@
 ---
-layout: post
 title: cpp17 A Proxy for when you want to construct an object after you start using
   it
-categories: blog
+date: 2019-02-18 18:31:30.854000000 Z
+categories:
+- blog
 tags:
 - cpp
 - c++
 - cpp17
 - c++17
-
+layout: post
 ---
+
 ## Or: using RAII in a RAII-unfriendly codebase
 
 #### Backstory - You can skip this

@@ -1,8 +1,12 @@
 ---
+title: notes on polymer
+date: 2019-02-18 18:31:30.922000000 Z
+categories:
+- blog
+tags:
+- waiterio
+- ui
 layout: post
-title:  "notes on polymer"
-categories: blog
-tags: waiterio ui
 ---
 
 [http://www.polymer-project.org/]

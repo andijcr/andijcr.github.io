@@ -1,8 +1,12 @@
 ---
+title: My Mixed Integer Programming approach for the first round of Google HashCode
+  2017
+date: 2017-03-15 00:00:00 Z
+categories:
+- blog
+tags:
+- python
 layout: post
-title:  "My Mixed Integer Programming approach for the first round of Google HashCode 2017"
-categories: blog
-tags: python
 ---
 
 ## Or: how Google has a nice library for optimization problems, but the documentation kinda sucks 

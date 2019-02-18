@@ -1,83 +1,77 @@
-# Site settings
-theme: jekyll-theme-slate
+---
 title: Andrea was here
+timezone: UTC
+collections:
+  posts:
+    title: Posts
+    output: true
+  uploads:
+    title: Uploads
+    output: true
+theme: jekyll-theme-slate
 email: andij.cr@gmail.com
-description: "Hic sunt leones. But mustly sketches and ideas."
-baseurl: ""
-url: "http://andijcr.github.io"
+description: Hic sunt leones. But mustly sketches and ideas.
+baseurl: ''
+url: http://andijcr.github.io
 github_username: andijcr
 date_format: "%b %-d, %Y"
-
-# Build settings
 permalink: pretty
-
-# Google services
-google_verification:
-# Use either direct GA implementation or set up GTM account
-# - using both will skew your data (leave blank to not use at all)
-google_analytics:
-google_tag_manager:
-# Bing services
-bing_verification:
-
-# Optional features
-animated:             false
-show_related_posts:   false
-show_post_footers:    false
-show_social_icons:    false
+google_verification: 
+google_analytics: 
+google_tag_manager: 
+bing_verification: 
+animated: false
+show_related_posts: false
+show_post_footers: false
+show_social_icons: false
 ajaxify_contact_form: false
 enable_mathjax: false
 extended_fonts: false
 enable_anchorjs: false
-
-# Disqus post comments
-# (leave blank to disable Disqus)
-disqus_shortname:
-
+disqus_shortname: 
 text:
   pagination:
-    newer: 'Newer'
-    older: 'Older'
+    newer: Newer
+    older: Older
   share_buttons:
-    text:         'Share this post!'
-    facebook:     'Share on Facebook'
-    twitter:      'Share on Twitter'
-    googleplus:   'Share on Google+'
-    linkedin:     'Share on LinkedIn'
-    digg:         'Share on Digg'
-    tumblr:       'Share on Tumblr'
-    reddit:       'Share on Reddit'
-    stumbleupon:  'Share on StumbleUpon'
-    hackernews:   'Share on Hacker News'
+    text: Share this post!
+    facebook: Share on Facebook
+    twitter: Share on Twitter
+    googleplus: Share on Google+
+    linkedin: Share on LinkedIn
+    digg: Share on Digg
+    tumblr: Share on Tumblr
+    reddit: Share on Reddit
+    stumbleupon: Share on StumbleUpon
+    hackernews: Share on Hacker News
   post:
-    updated:        'Updated'
-    minute_read:    'minute read'
-    related_posts:  'Related Posts'
+    updated: Updated
+    minute_read: minute read
+    related_posts: Related Posts
   index:
-    coming_soon: 'Coming soon...'
+    coming_soon: Coming soon...
   contact:
-    email:    'Email Address'
-    content:  'What would you like to say?'
-    subject:  'New submission!'
-    submit:   'Say Hello'
+    email: Email Address
+    content: What would you like to say?
+    subject: New submission!
+    submit: Say Hello
     ajax:
-      sending:  'sending..'
-      sent:     'Message sent!'
-      error:    'Error!'
-  thanks: 'Thanks for contacting us. We will reply as soon as possible.'
-  og_locale: 'en_US'
-
-# Build settings
-markdown:     kramdown
+      sending: sending..
+      sent: Message sent!
+      error: Error!
+  thanks: Thanks for contacting us. We will reply as soon as possible.
+  og_locale: en_US
+markdown: kramdown
 redcarpet:
-  extensions: ['smart', 'tables', 'with_toc_data']
-permalink:    pretty
-paginate:     4
+  extensions:
+  - smart
+  - tables
+  - with_toc_data
+paginate: 4
 sass:
   style: compressed
 gems:
-  - jekyll-paginate
-  - jekyll-sitemap
-# https://github.com/jekyll/jekyll/issues/2938
-exclude: [vendor]
-
+- jekyll-paginate
+- jekyll-sitemap
+exclude:
+- vendor

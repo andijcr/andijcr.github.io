@@ -1,8 +1,13 @@
 ---
+title: Notes on bulding an aquarium for ettore, my goldfish
+date: 2019-02-18 18:31:30.887000000 Z
+categories:
+- blog
+tags:
+- ettore
+- goldfish
+- aquarium
 layout: post
-title:  "Notes on bulding an aquarium for ettore, my goldfish"
-categories: blog
-tags: ettore goldfish aquarium
 ---
 
 this is Ettore (pic of ettore)

@@ -1,8 +1,12 @@
 ---
+title: First version of the graphic for the presentation of Smart Locker
+date: 2014-07-27 00:00:00 Z
+categories:
+- blog
+tags:
+- mug
+- graphics
 layout: post
-title:  "First version of the graphic for the presentation of Smart Locker"
-categories: blog
-tags: mug graphics
 ---
 
 for the project Smart Locker, in realization inside [MUG](https://www.facebook.com/mugroma3), i designed this graphic (sorry for the filesize and quality):
