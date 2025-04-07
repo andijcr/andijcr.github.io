@@ -1,0 +1,24 @@
+# baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'a site for stuff'
+theme = 'cactus'
+
+[params]
+description = 'Andrea was here'
+mainSection = 'posts'
+shwAllPostsOnHomePage = true
+
+[[params.social]]
+name = 'github'
+link = 'https://github.com/andijcr'
+
+[[menu.main]]
+name = 'Home'
+url = '/'
+weight = 1
+
+[[menu.main]]
+name = 'Posts'
+url = '/posts'
+weight = 2
+
