@@ -3,3 +3,6 @@ _site
 blog.sublime-project
 blog.sublime-workspace
 Gemfile.lock
+public/
+resources/
+.hugo_build.lock

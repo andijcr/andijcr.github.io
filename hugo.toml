@@ -1,7 +1,11 @@
-# baseURL = 'https://example.org/'
+baseURL = 'https://andijcr.github.io/'
 languageCode = 'en-us'
 title = 'a site for stuff'
 theme = 'cactus'
+
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
 
 [params]
 description = 'Andrea was here'
