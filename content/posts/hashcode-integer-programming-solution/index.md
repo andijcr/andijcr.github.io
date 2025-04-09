@@ -148,7 +148,7 @@ def summaryPrinter(value, res):
                ', '.join(map(lambda x: 'video%d' % (x.ID), vl))))
 ```
 
-# The interesting Integer Linear Programming bit
+## The interesting Integer Linear Programming bit
 
 Finally the central part. this is the sum of an afternoon of exploring and learning to use the library on this notebook, and a couple of days to debug it/make it usable.
 
