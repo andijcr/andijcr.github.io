@@ -10,7 +10,6 @@ theme = 'cactus'
 [params]
 description = 'Andrea was here'
 mainSection = 'posts'
-shwAllPostsOnHomePage = true
 
 [[params.social]]
 name = 'github'
