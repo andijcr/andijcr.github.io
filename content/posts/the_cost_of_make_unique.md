@@ -3,6 +3,8 @@ title = 'The Cost of `std::make_unique`'
 date = 2025-04-29T00:00:00+02:00
 +++
 
+[compiler-explorer link](https://gcc.godbolt.org/z/Yz7ohE16j)
+
 ## Intro
 
 What I'm about to write is fairly obvious, but it's always interesting to
