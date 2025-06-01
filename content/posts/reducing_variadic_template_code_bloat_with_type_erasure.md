@@ -11,15 +11,25 @@ One of the clever techniques it employs relates to how it handles the code bloat
 
 ### Understanding Template Instantiation and Code Bloat
 
-What is the issue? When we invoke a template, the compiler will instantiate it, either generating a new procedure or inlining it at the call site. Each new concrete template instantiation will be independent from other type instantiations; there is no general way for the compiler to reuse a common implementation across different instantiations. This phenomenon is called template bloat (or code bloat/template explosion) and it can be problematic when considering the generated code size.
+What is the issue? When we invoke a template, the compiler will instantiate it, either generating a new procedure or inlining it at the call site.
 
-With a variadic template, the problem is even worse. Since the number and types of arguments are now unbounded at the template definition site, each invocation might generate and inline a unique version of the function at the call site, leading to a lot of repetitive code. Invoking the function again with the same sequence of types might not reuse the previous instantiation but instead inline it again at the call site.
+Each new concrete template instantiation will be independent from other type instantiations; there is no general way for the compiler to reuse a common implementation across different instantiations.
+
+This phenomenon is called template bloat (or code bloat/template explosion) and it can be problematic when considering the generated code size.
+
+With a variadic template, the problem is even worse.
+
+Since the number and types of arguments are now unbounded at the template definition site, each invocation might generate and inline a unique version of the function at the call site, leading to a lot of repetitive code.
+
+Invoking the function again with the same sequence of types might not reuse the previous instantiation but instead inline it again at the call site.
 
 ### Illustrating the Problem: A Basic Variadic Printer
 
 Let's set up an example with a formatting function that prints its arguments separated by a space and ending in a newline. I'll write something that resembles the core functionality of `fmtlib`.
 
-First, let's define some basic type formatting functions. The user can provide an overload of `print_fn` to print their custom type, while the library will provide a set of base formatters:
+First, let's define some basic type formatting functions.
+
+The user can provide an overload of `print_fn` to print their custom type, while the library will provide a set of base formatters:
 
 ```c++
 // provide an overload of print_fn to output your type
@@ -136,14 +146,22 @@ variadic_printer_user_multiple():
 ```
 
 The assembly shows that `variadic_print` effectively expands to a sequence of manual calls to `print_fn`.
-Interestingly, the compiler generated a distinct `variadic_print<int, double, int, char[8]>` instantiation to use for both `variadic_printer_user` and the first line of `variadic_printer_user_multiple`. However, it could not reuse this instantiation for the second line because of the different sizes of string literals, which are represented as separate types: `char[8]` and `char[14]`.
-This shows that even including a different-sized string literal changes the type signature of `variadic_print`, requiring a new instantiation. In general, this code bloat is a genuine concern and can be painful in contexts where binary size is important.
+
+Interestingly, the compiler generated a distinct `variadic_print<int, double, int, char[8]>` instantiation to use for both `variadic_printer_user` and the first line of `variadic_printer_user_multiple`.
+
+However, it could not reuse this instantiation for the second line because of the different sizes of string literals, which are represented as separate types: `char[8]` and `char[14]`.
+
+This shows that even including a different-sized string literal changes the type signature of `variadic_print`, requiring a new instantiation.
+
+In general, this code bloat is a genuine concern and can be painful in contexts where binary size is important.
 
 ### The Solution: Type Erasure for Efficient Codegen
 
 We can do better. We can use type erasure to reduce code generation (codegen), similar to how `printf` operates internally, while retaining the ergonomics and features of a variadic interface.
 
-The trick is to convert the variadic list of types to an array of a single, type-erased object type. This object will be capable of selecting the correct `print_fn` overload for its stored runtime value:
+The trick is to convert the variadic list of types to an array of a single, type-erased object type.
+
+This object will be capable of selecting the correct `print_fn` overload for its stored runtime value:
 
 ```c++
 // type-erased formatting function
@@ -158,12 +176,19 @@ void print(Ts const&... args) {
 }
 ```
 
-A temporary `std::array` is created with the `args` converted to the common `carrier` type and passed to the non-templated, type-erased `vprint` function. As long as we are careful not to create dangling references within the `carrier`'s constructor (e.g., by storing a pointer to a temporary created *inside* the constructor itself), we are fine since the `carrier` objects in the array will all live until the end of the statement (the call to `vprint`).
+A temporary `std::array` is created with the `args` converted to the common `carrier` type and passed to the non-templated, type-erased `vprint` function.
+
+As long as we are careful not to create dangling references within the `carrier`'s constructor (e.g., by storing a pointer to a temporary created *inside* the constructor itself), we are fine since the `carrier` objects in the array will all live until the end of the statement (the call to `vprint`).
 
 ### Introducing the `carrier` Struct
 
-The `carrier` is conceptually a `void` pointer to the value and a function pointer to the formatting function (in `fmtlib`, this would be more akin to a formatting object or a visitation pattern). There are, however, some optimizations to account for primitive types and string literals to reduce unnecessary indirections and further optimize codegen.
-We use a `union` to store either a primitive type or a `void const*` to the value. The overloaded `carrier::carrier` constructors are responsible for creating a lambda (which becomes a function pointer) that will "remember" the type of `arg` and select the correct `print_fn` overload.
+The `carrier` is conceptually a `void` pointer to the value and a function pointer to the formatting function (in `fmtlib`, this would be a formatting object).
+
+There are, however, some optimizations to account for primitive types and string literals to reduce unnecessary indirections and further optimize codegen.
+
+We use a `union` to store either a primitive type or a `void const*` to the value.
+
+The overloaded `carrier::carrier` constructors are responsible for creating a lambda (which becomes a function pointer) that will "remember" the type of `arg` and select the correct `print_fn` overload.
 
 ```c++
 // type-erased printer argument carrier. the argument has to outlive the
@@ -299,7 +324,11 @@ printer_user_multiple():
         ret
 ```
 
-The assembly shows the `print` function setting up an array of `carrier` objects on the stack (pointers/values and their corresponding printer function pointers) and then calling the `vprint` function. There is less complex template machinery going on directly within `printer_user` and `printer_user_multiple`, making it clearer what code is part of the formatting setup versus the actual printing logic within `vprint`. Also, across the codebase, we are avoiding the combinatorial explosion of function template instantiations needed to satisfy all the type sequences that we would require for our purely variadic format functions.
+The assembly shows the `print` function setting up an array of `carrier` objects on the stack (pointers/values and their corresponding printer function pointers) and then calling the `vprint` function.
+
+There is less complex template machinery going on directly within `printer_user` and `printer_user_multiple`, making it clearer what code is part of the formatting setup versus the actual printing logic within `vprint`.
+
+Also, across the codebase, we are avoiding the combinatorial explosion of function template instantiations needed to satisfy all the type sequences that we would require for our purely variadic format functions.
 
 In a way, this is an extensible and type-safe (at the point of `carrier` construction and `print_fn` dispatch) C++ reimplementation of the variadic mechanism used internally by functions like `printf` (though `printf` itself lacks compile-time type safety for its arguments).
 
@@ -317,7 +346,9 @@ void print_our() { print(our{1, 47}); }
 
 ### Conclusion: A Glimpse into Library Design
 
-All in all, this is just a small part of the techniques used in a library like `fmtlib`; we are missing key aspects such as compile-time format string parsing and the associated compile-time type safety checks against that format string. Still, I had fun studying and reimplementing this detail of such a library.
+All in all, this is just a small part of the techniques used in a library like `fmtlib`; we are missing key aspects such as compile-time format string parsing and the associated compile-time type safety checks against that format string.
+
+Still, I had fun studying and reimplementing this detail of such a library.
 
 ### Complete Example on Godbolt
 
