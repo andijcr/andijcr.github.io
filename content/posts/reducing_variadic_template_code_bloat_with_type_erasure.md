@@ -155,7 +155,7 @@ This shows that even including a different-sized string literal changes the type
 
 In general, this code bloat is a genuine concern and can be painful in contexts where binary size is important.
 
-### The Solution: Type Erasure for Efficient Codegen
+### A Solution: Type Erasure for Efficient Codegen
 
 We can do better. We can use type erasure to reduce code generation (codegen), similar to how `printf` operates internally, while retaining the ergonomics and features of a variadic interface.
 
@@ -253,7 +253,7 @@ struct carrier {
 ```
 
 Some details:
-1.  The lambdas are captureless. This means that they can be safely converted to function pointers and that they will not dangle or rely on local constructor state once the constructor terminates. In assembly, they will often appear as normal non-member functions.
+1.  The lambdas are captureless. This means that they can be safely converted to function pointers and that they will not dangle or rely on local constructor state once the constructor terminates. In assembly, they will appear as normal non-member functions.
 2.  Be cautious with lifetimes: If a `carrier` constructor were to create a temporary object (e.g., `std::string_view temp_sv = some_char_ptr;`) and then store a pointer to that temporary (`arg.ptr = temp_sv.data();`), `arg.ptr` would become a dangling pointer when the constructor exits. The `carrier` must either store small types by value (as done with `int`, `double`) or store pointers/references to objects whose lifetimes exceed the `vprint` call. (Always use tools like AddressSanitizer to catch lifetime issues!).
 3.  `int`, `double`, and other small/primitive types are directly stored in the `carrier` object's `union`. This avoids an indirection and can improve cache locality.
 4.  String literals have a `char[N]` type that is distinct for each size `N`. To reduce codegen for `carrier` constructors, the `carrier(char const (&strlit)[N])` constructor is templated on `N` and defers to the `const char*` constructor. This gets optimized well by the compiler. If we instead implemented the logic directly in the `char const (&strlit)[N]` constructor, we would get code bloat by generating `N` different constructor instantiations and associated lambdas, all doing essentially the same work.
@@ -326,13 +326,13 @@ printer_user_multiple():
 
 The assembly shows the `print` function setting up an array of `carrier` objects on the stack (pointers/values and their corresponding printer function pointers) and then calling the `vprint` function.
 
-There is less complex template machinery going on directly within `printer_user` and `printer_user_multiple`, making it clearer what code is part of the formatting setup versus the actual printing logic within `vprint`.
+There is less template machinery going on directly within `printer_user` and `printer_user_multiple`, making it clearer what code is part of the formatting setup versus the actual printing logic within `vprint`.
 
 Also, across the codebase, we are avoiding the combinatorial explosion of function template instantiations needed to satisfy all the type sequences that we would require for our purely variadic format functions.
 
-In a way, this is an extensible and type-safe (at the point of `carrier` construction and `print_fn` dispatch) C++ reimplementation of the variadic mechanism used internally by functions like `printf` (though `printf` itself lacks compile-time type safety for its arguments).
+In a way, this is an extensible and type-safe C++ reimplementation of the variadic mechanism used internally by functions like `printf`.
 
-Finally, we can print any type by defining its printing function (`print_fn` overload), and the templated `carrier` constructor will pick it up automatically:
+Finally, we can print any type by defining its printing function, and the templated `carrier` constructor will pick it up automatically:
 
 ```c++
 struct our {
@@ -346,7 +346,7 @@ void print_our() { print(our{1, 47}); }
 
 ### Conclusion: A Glimpse into Library Design
 
-All in all, this is just a small part of the techniques used in a library like `fmtlib`; we are missing key aspects such as compile-time format string parsing and the associated compile-time type safety checks against that format string.
+This is just a small part of the techniques used in a library like `fmtlib`; we are missing key aspects such as compile-time format string parsing and the associated compile-time type safety checks against that format string.
 
 Still, I had fun studying and reimplementing this detail of such a library.
 
