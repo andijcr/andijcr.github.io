@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tombola Napoletana con Smorfia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .header-font {
+            font-family: 'Lobster', cursive;
+        }
+
+        .number-cell {
+            aspect-ratio: 1 / 1;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .number-cell.active {
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .drawn-number-animate {
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Custom scrollbar for the Smorfia list */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-5xl md:text-6xl text-red-700 header-font mb-2">Tombola Napoletana</h1>
+            <p class="text-gray-600 italic">La tradizione della Smorfia a portata di clic</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Controls and Current Number -->
+            <div class="lg:col-span-1 space-y-6">
+                
+                <!-- Current Number Display -->
+                <div class="bg-white rounded-3xl shadow-xl p-8 text-center border-t-8 border-red-600">
+                    <h2 class="text-xl font-semibold text-gray-500 uppercase tracking-widest mb-4">Ultimo Numero</h2>
+                    <div id="current-number" class="text-9xl font-bold text-red-600 mb-4 h-32 flex items-center justify-center">—</div>
+                    <div id="current-smorfia" class="text-2xl italic text-gray-700 font-medium min-h-[4rem]">
+                        Pronto per iniziare?
+                    </div>
+                </div>
+
+                <!-- Game Controls -->
+                <div class="bg-white rounded-3xl shadow-lg p-6 space-y-4">
+                    <button id="draw-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-2xl text-xl shadow-lg transform transition active:scale-95">
+                        Estrai Numero
+                    </button>
+                    <div class="flex gap-2">
+                        <button id="reset-btn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-xl transition">
+                            Nuova Partita
+                        </button>
+                    </div>
+                    
+                    <!-- Statistics -->
+                    <div class="pt-4 border-t border-gray-100 flex justify-between text-sm text-gray-500">
+                        <span>Estratti: <span id="count-drawn" class="font-bold text-red-600">0</span>/90</span>
+                        <span>Rimanenti: <span id="count-left" class="font-bold text-gray-700">90</span></span>
+                    </div>
+                </div>
+
+                <!-- History Log (Smorfia Meanings) -->
+                <div class="bg-white rounded-3xl shadow-lg p-6">
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="mr-2">📜</span> Cronologia
+                    </h3>
+                    <div id="history-log" class="h-64 overflow-y-auto custom-scrollbar space-y-2 text-sm">
+                        <p class="text-gray-400 text-center py-10">Nessun numero ancora estratto</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: The Main Board (Tabellone) -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-3xl shadow-2xl p-4 md:p-6">
+                    <div id="tabellone" class="grid grid-cols-10 gap-1 md:gap-2">
+                        <!-- Numbers 1 to 90 will be injected here -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal for game over -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center">
+            <h2 class="text-3xl font-bold text-red-700 mb-4">Gioco Terminato!</h2>
+            <p class="text-gray-600 mb-6">Tutti i 90 numeri sono stati estratti.</p>
+            <button onclick="resetGame()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl">Inizia Nuova Partita</button>
+        </div>
+    </div>
+
+    <script>
+        const smorfia = {
+            1: "L'Italia", 2: "'A piccerella", 3: "'A gatta", 4: "'O puorco", 5: "'A mano",
+            6: "Quella che guarda per terra", 7: "Vaso di creta", 8: "'A Madonna", 9: "'A figliata", 10: "I fagioli",
+            11: "I topi", 12: "I soldati", 13: "Sant'Antonio", 14: "'O mbriaco", 15: "Il ragazzo",
+            16: "Il culo", 17: "'A sfortuna", 18: "Il sangue", 19: "'A risata", 20: "'A festa",
+            21: "'A femmena nuda", 22: "'O pazzo", 23: "'O scemo", 24: "Le guardie", 25: "Natale",
+            26: "Nanninella", 27: "'O pitale", 28: "I seni", 29: "'O pate d''e criature", 30: "Le palle del tenente",
+            31: "'O padrone 'e casa", 32: "'O capitone", 33: "L'età di Cristo", 34: "'A capa", 35: "L'uccellino",
+            36: "Le nacchere", 37: "Il monaco", 38: "Le mazzate", 39: "A fune 'n ganna", 40: "'A paposcia",
+            41: "'O curtiello", 42: "'O cafè", 43: "Donna peripatetica", 44: "Le carceri", 45: "Il buon vino",
+            46: "I denari", 47: "'O muorto", 48: "'O muorto che parla", 49: "'O piezzo 'e carne", 50: "'O pane",
+            51: "Il giardino", 52: "'A mamma", 53: "'O viecchio", 54: "Il cappello", 55: "'A musica",
+            56: "La caduta", 57: "'O scartellato", 58: "'O paccotto", 59: "I peli", 60: "Se n'è caruto 'o vasetto",
+            61: "Il cacciatore", 62: "'O muorto acciso", 63: "La sposa", 64: "'A sciammeria", 65: "Il pianto",
+            66: "Le due zitelle", 67: "'O totaro dint' 'a chitarra", 68: "La zuppa cotta", 69: "Sott'e n'coppa", 70: "Il palazzo",
+            71: "L'uomo di merda", 72: "'A maraviglia", 73: "L'ospedale", 74: "Grotta di fango", 75: "Pulcinella",
+            76: "La fontana", 77: "Le gambe delle donne", 78: "Bella figliola", 79: "'O mariuolo", 80: "La bocca",
+            81: "I fiori", 82: "La tavola imbandita", 83: "'O maletiempo", 84: "La chiesa", 85: "Le anime del purgatorio",
+            86: "'A puteca", 87: "I pidocchi", 88: "I caciocavalli", 89: "La vecchia", 90: "'A paura"
+        };
+
+        let remainingNumbers = Array.from({ length: 90 }, (_, i) => i + 1);
+        let drawnNumbers = [];
+
+        const tabellone = document.getElementById('tabellone');
+        const drawBtn = document.getElementById('draw-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const currentNumDisplay = document.getElementById('current-number');
+        const currentSmorfiaDisplay = document.getElementById('current-smorfia');
+        const countDrawnDisplay = document.getElementById('count-drawn');
+        const countLeftDisplay = document.getElementById('count-left');
+        const historyLog = document.getElementById('history-log');
+        const modal = document.getElementById('modal');
+
+        // Initialize Board
+        function initBoard() {
+            tabellone.innerHTML = '';
+            for (let i = 1; i <= 90; i++) {
+                const cell = document.createElement('div');
+                cell.id = `cell-${i}`;
+                cell.className = 'number-cell border border-gray-100 flex items-center justify-center bg-gray-50 text-gray-400 font-bold text-lg md:text-xl rounded-lg';
+                cell.textContent = i;
+                tabellone.appendChild(cell);
+            }
+        }
+
+        // Draw Number
+        function drawNumber() {
+            if (remainingNumbers.length === 0) {
+                modal.classList.remove('hidden');
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * remainingNumbers.length);
+            const number = remainingNumbers.splice(randomIndex, 1)[0];
+            drawnNumbers.push(number);
+
+            updateUI(number);
+        }
+
+        // Update UI
+        function updateUI(number) {
+            // Update board
+            const cell = document.getElementById(`cell-${number}`);
+            cell.classList.add('active');
+
+            // Update Big Display
+            currentNumDisplay.textContent = number;
+            currentNumDisplay.classList.remove('drawn-number-animate');
+            void currentNumDisplay.offsetWidth; // trigger reflow
+            currentNumDisplay.classList.add('drawn-number-animate');
+            
+            currentSmorfiaDisplay.textContent = smorfia[number];
+
+            // Update Counts
+            countDrawnDisplay.textContent = drawnNumbers.length;
+            countLeftDisplay.textContent = remainingNumbers.length;
+
+            // Update History
+            if (drawnNumbers.length === 1) historyLog.innerHTML = '';
+            
+            const logItem = document.createElement('div');
+            logItem.className = 'flex items-center justify-between p-2 bg-red-50 rounded-lg border-l-4 border-red-500 animate-fade-in';
+            logItem.innerHTML = `
+                <span class="font-bold text-red-700 w-8">${number}</span>
+                <span class="text-gray-700 flex-1 text-right italic">${smorfia[number]}</span>
+            `;
+            historyLog.prepend(logItem);
+
+            // Disable button if finished
+            if (remainingNumbers.length === 0) {
+                drawBtn.disabled = true;
+                drawBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Reset Game
+        function resetGame() {
+            remainingNumbers = Array.from({ length: 90 }, (_, i) => i + 1);
+            drawnNumbers = [];
+            
+            currentNumDisplay.textContent = '—';
+            currentSmorfiaDisplay.textContent = 'Pronto per iniziare?';
+            countDrawnDisplay.textContent = '0';
+            countLeftDisplay.textContent = '90';
+            historyLog.innerHTML = '<p class="text-gray-400 text-center py-10">Nessun numero ancora estratto</p>';
+            
+            drawBtn.disabled = false;
+            drawBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            modal.classList.add('hidden');
+            
+            initBoard();
+        }
+
+        // Listeners
+        drawBtn.addEventListener('click', drawNumber);
+        resetBtn.addEventListener('click', resetGame);
+
+        // Start
+        window.onload = initBoard;
+    </script>
+</body>
+</html>
